@@ -1,0 +1,157 @@
+@startuml
+skinparam handwritten true
+skinparam ClassAttributeIconStyle stereotype
+skinparam ClassFontSize 14
+skinparam ClassFontStyle bold
+skinparam DefaultFontName "Arial"
+
+' Abstract Class'
+abstract class Usuario {
+    + idUsuario: String
+    + nombre: String
+    + apellido: String
+    + email: String
+    + contrasena: String
+    + fechaRegistro: Date
+    + ultimaSesion: Date
+    --
+    + iniciarSesion(email, contrasena): Boolean
+    + cerrarSesion(): void
+    + recuperarContrasena(email): Boolean
+    + actualizarPerfil(datos): void
+}
+
+class Especialista {
+    + numCedulaProfesional: String
+    + especialidad: String
+    + telefonoContacto: String
+    --
+    + registrarUsuario(tipo, datos): Usuario
+    + eliminarUsuario(idUsuario): Boolean
+    + asignarMinijuego(idNiño, idMinijuego): void
+    + revisarMensajesPadres(): List<Mensaje>
+    + responderMensaje(idMensaje, respuesta): void
+    + verAnalisisActividades(idNiño): ReporteActividades
+    + registrarConsulta(idNiño, fecha, observaciones): void
+    + generarInformeProgreso(idNiño, periodo): Documento
+}
+
+class Padre {
+    + telefonoContacto: String
+    + relacionConNiño: String
+    --
+    + verResultadosMinijuego(idNiño): List<ResultadoMinijuego>
+    + enviarMensaje(idEspecialista, mensaje, archivos): Boolean
+    + editarMensaje(idMensaje, nuevoMensaje): Boolean
+    + recibirObservaciones(idEspecialista): List<Observacion>
+    + verProgresoGeneralNiño(idNiño): ReporteProgreso
+}
+
+class Niño {
+    + edad: Integer
+    + fechaNacimiento: Date
+    + pinAcceso: String
+    --
+    + jugarMinijuego(idMinijuego): void
+    + registrarEntradaDiario(contenido, tipo): void
+    + verMinijuegosAsignados(): List<Minijuego>
+}
+
+class Minijuego {
+    + idMinijuego: String
+    + nombre: String
+    + descripcion: String
+    + urlJuego: String
+    + nivelDificultad: Integer
+    + objetivoTerapeutico: String
+    --
+    + ejecutarJuego(): void
+}
+
+class ResultadoMinijuego {
+    + idResultado: String
+    + idNiño: String
+    + idMinijuego: String
+    + puntaje: Integer
+    + tiempoRealizacion: Time
+    + numeroIntentos: Integer
+    + fechaRealizacion: Date
+    --
+    + registrarResultado(puntaje, tiempo, intentos): void
+}
+
+class DiarioNiño {
+    + idEntrada: String
+    + idNiño: String
+    + fechaEntrada: Date
+    + contenidoTexto: String
+    + urlImagenDibujo: String
+    + estadoAnimo: String
+    --
+    + crearEntrada(contenido, tipo): void
+}
+
+class Mensaje {
+    + idMensaje: String
+    + idRemitente: String
+    + idDestinatario: String
+    + contenidoTexto: String
+    + urlArchivosAdjuntos: List<String>
+    + fechaEnvio: DateTime
+    + fechaEdicion: DateTime
+    + leido: Boolean
+    --
+    + enviar(contenido, adjuntos): void
+    + editar(nuevoContenido): Boolean
+}
+
+class ObservacionEspecialista {
+    + idObservacion: String
+    + idEspecialista: String
+    + idPadre: String
+    + contenido: String
+    + fechaEnvio: Date
+    + idNiñoAsociado: String
+    --
+    + crearObservacion(contenido, idNiño, idPadre): void
+}
+
+class Consulta {
+    + idConsulta: String
+    + idNiño: String
+    + idEspecialista: String
+    + fecha: Date
+    + horaInicio: Time
+    + horaFin: Time
+    + tipoSesion: String
+    + notas: String
+}
+
+' Relations '
+Usuario <|-- Especialista
+Usuario <|-- Padre
+Usuario <|-- Niño
+
+Especialista "1" -- "*" Niño : gestiona >
+Padre "1" -- "1..*" Niño : es tutor de >
+Niño "1" -- "1" Padre : padreAsociado
+
+Especialista "1" -- "*" Minijuego : asigna >
+Niño "1" -- "*" Minijuego : juega >
+
+Niño "1" -- "*" ResultadoMinijuego : genera >
+Minijuego "1" -- "*" ResultadoMinijuego : es registrado en >
+
+Niño "1" -- "*" DiarioNiño : tiene >
+
+Padre "1" -- "*" Mensaje : envía >
+Especialista "1" -- "*" Mensaje : recibe/envía >
+
+Especialista "1" -- "*" ObservacionEspecialista : envía >
+Padre "1" -- "*" ObservacionEspecialista : recibe >
+
+Especialista "1" -- "*" Consulta : registra >
+Niño "1" -- "*" Consulta : tiene >
+
+
+@enduml

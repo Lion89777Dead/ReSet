@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #fafafa;
+}
+
+#tablero {
+    display: grid;
+    /* Se ajusta el número de columnas dinámicamente con JavaScript */
+    grid-gap: 10px;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.carta {
+    width: 80px;
+    height: 80px;
+    background: #3498db;
+    color: #fff;
+    font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px;
+    user-select: none;
+    transition: background 0.3s;
+}
+
+.carta.volteada, .carta.completada {
+    background: #2ecc71;
+    cursor: default;
+}
+
+#mensaje {
+    margin-top: 20px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.tablero-deshabilitado .carta {
+    pointer-events: none;
+    opacity: 0.5;
+}
